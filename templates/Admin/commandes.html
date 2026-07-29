@@ -1,0 +1,37 @@
+{% extends 'Base/base_admin.html' %}
+
+{% block title %}Commandes — Délice Express{% endblock %}
+{% block page_title %}Commandes{% endblock %}
+{% block page_subtitle %}Suivi de toutes les commandes{% endblock %}
+
+{% block content %}
+
+    {# TODO: fichier vide dans la version fournie — structure à compléter selon le contexte passé par la vue #}
+    <table>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Type</th>
+                <th>Table</th>
+                <th>Total</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commande in commandes %}
+            <tr>
+                <td>#{{ commande.id }}</td>
+                <td>{{ commande.get_type_commande_display }}</td>
+                <td>{% if commande.table %}Table N°{{ commande.table.numero }}{% else %}—{% endif %}</td>
+                <td>{{ commande.total }} FCFA</td>
+                <td><span class="badge {{ commande.statut }}">{{ commande.get_statut_display }}</span></td>
+                <td class="actions"></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="empty">Aucune commande pour le moment.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

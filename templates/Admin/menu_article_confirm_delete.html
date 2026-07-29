@@ -1,0 +1,17 @@
+{% extends 'Base/base_admin.html' %}
+
+{% block title %}Supprimer un article — Délice Express{% endblock %}
+{% block page_title %}Confirmer la suppression{% endblock %}
+
+{% block content %}
+
+    <form method="post" class="card-form">
+        {% csrf_token %}
+        <p>Es-tu sûr de vouloir supprimer l'article "<strong>{{ object.nom }}</strong>" ?</p>
+        <div class="btn-bar">
+            <button type="submit" class="btn danger">Oui, supprimer</button>
+            <a href="{% url 'menu_articles' %}" class="btn secondary">Annuler</a>
+        </div>
+    </form>
+
+{% endblock %}

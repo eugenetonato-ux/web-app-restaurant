@@ -1,0 +1,62 @@
+{% extends 'Base/base_admin.html' %}
+
+{% block title %}Tableau de bord — Délice Express{% endblock %}
+{% block page_title %}Bonjour, {{ request.user.get_full_name|default:request.user.username }}{% endblock %}
+{% block page_subtitle %}Voici un aperçu de la journée{% endblock %}
+
+{% block content %}
+
+    <div class="cards">
+        <div class="card ca">
+            <div class="label">Chiffre d'affaires du jour</div>
+            <div class="amount">{{ ca_du_jour|default:"0" }} FCFA</div>
+        </div>
+        <div class="card">
+            <div class="label">Commandes du jour</div>
+            <div class="amount">{{ nombre_commandes_jour|default:"0" }}</div>
+        </div>
+        <div class="card">
+            <div class="label">Commandes en attente</div>
+            <div class="amount">{{ nombre_commandes_attente|default:"0" }}</div>
+        </div>
+        <div class="card">
+            <div class="label">Tables occupées</div>
+            <div class="amount">{{ tables_occupees|default:"0" }}</div>
+        </div>
+    </div>
+
+    <div class="section-title">Commandes en cours</div>
+    <table>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Type</th>
+                <th>Table</th>
+                <th>Total</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commande in commandes_en_cours %}
+            <tr>
+                <td>#{{ commande.id }}</td>
+                <td>{{ commande.get_type_commande_display }}</td>
+                <td>{% if commande.table %}Table N°{{ commande.table.numero }}{% else %}—{% endif %}</td>
+                <td>{{ commande.total }} FCFA</td>
+                <td><span class="badge {{ commande.statut }}">{{ commande.get_statut_display }}</span></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" class="empty">Aucune commande en cours pour le moment.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="quick-links">
+        <a href="{% url 'menu_categories' %}">🍽️ Gérer le menu</a>
+        <a href="{% url 'tables_liste' %}">🪑 Gérer les tables</a>
+        <a href="{% url 'commandes_liste' %}">🧾 Voir les commandes</a>
+        <a href="#">💵 Caisse</a>
+        <a href="#">📊 Rapport journalier</a>
+    </div>
+
+{% endblock %}

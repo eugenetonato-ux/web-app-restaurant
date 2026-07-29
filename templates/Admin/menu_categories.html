@@ -1,0 +1,43 @@
+{% extends 'Base/base_admin.html' %}
+
+{% block title %}Catégories — Délice Express{% endblock %}
+{% block page_title %}Catégories{% endblock %}
+{% block page_subtitle %}Gérez les catégories du menu{% endblock %}
+
+{% block topbar_actions %}
+    <a href="{% url 'menu_categorie_ajouter' %}" class="btn">+ Ajouter une catégorie</a>
+{% endblock %}
+
+{% block content %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cat in categories %}
+            <tr>
+                <td>{{ cat.nom }}</td>
+                <td>
+                    {% if cat.actif %}
+                        <span class="badge libre">Actif</span>
+                    {% else %}
+                        <span class="badge annulee">Inactif</span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    <a href="{% url 'menu_categorie_modifier' cat.pk %}">Modifier</a>
+                    <a href="{% url 'menu_categorie_supprimer' cat.pk %}" class="danger">Supprimer</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="3" class="empty">Aucune catégorie pour le moment.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

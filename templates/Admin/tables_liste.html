@@ -1,0 +1,33 @@
+{% extends 'Base/base_admin.html' %}
+
+{% block title %}Tables — Délice Express{% endblock %}
+{% block page_title %}Tables{% endblock %}
+{% block page_subtitle %}Gérez les tables du restaurant{% endblock %}
+
+{% block content %}
+
+    {# TODO: fichier vide dans la version fournie — structure à compléter selon le contexte passé par la vue #}
+    <table>
+        <thead>
+            <tr>
+                <th>N° de table</th>
+                <th>Capacité</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for table in tables %}
+            <tr>
+                <td>Table N°{{ table.numero }}</td>
+                <td>{{ table.capacite }}</td>
+                <td><span class="badge {{ table.statut }}">{{ table.get_statut_display }}</span></td>
+                <td class="actions"></td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4" class="empty">Aucune table pour le moment.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'Base/base_admin.html' %}
+
+{% block title %}{% if object %}Modifier la catégorie{% else %}Ajouter une catégorie{% endif %} — Délice Express{% endblock %}
+{% block page_title %}{% if object %}Modifier la catégorie{% else %}Ajouter une catégorie{% endif %}{% endblock %}
+
+{% block content %}
+
+    <form method="post" enctype="multipart/form-data" class="card-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="btn-bar">
+            <button type="submit" class="btn">Enregistrer</button>
+            <a href="{% url 'menu_categories' %}" class="btn secondary">Annuler</a>
+        </div>
+    </form>
+
+{% endblock %}
