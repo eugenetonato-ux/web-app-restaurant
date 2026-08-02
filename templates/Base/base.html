@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Délice Express — Fast-Food & Restaurant{% endblock %}</title>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- En-tête Navbar (Inspiré Maquette 1) -->
+    <header class="navbar-custom">
+        <a href="{% url 'website_home' %}" class="navbar-brand-logo">
+            <i class="fa-solid fa-burger"></i>
+            Délice <span>Express</span>
+        </a>
+
+        <ul class="nav-menu-links" id="navMenuLinks">
+            <li><a href="{% url 'website_home' %}" class="{% if request.resolver_match.url_name == 'website_home' %}active{% endif %}">Accueil</a></li>
+            <li><a href="{% url 'website_menu' %}" class="{% if request.resolver_match.url_name == 'website_menu' %}active{% endif %}">Menu</a></li>
+            <li class="nav-dropdown">
+                <button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    Catégories <i class="fa-solid fa-chevron-down nav-dropdown-caret"></i>
+                </button>
+                <ul class="nav-dropdown-menu">
+                    {% for cat in nav_categories %}
+                        <li><a href="{% url 'website_menu' %}?category={{ cat.slug }}"><i class="fa-solid {{ cat.icone|default:'fa-utensils' }}"></i> {{ cat.nom }}</a></li>
+                    {% empty %}
+                        <li><a href="{% url 'website_menu' %}">Découvrir le menu</a></li>
+                    {% endfor %}
+                    <li class="nav-dropdown-divider"></li>
+                    <li><a href="{% url 'website_home' %}#categories"><i class="fa-solid fa-grip"></i> Toutes les catégories</a></li>
+                </ul>
+            </li>
+            <li><a href="{% url 'website_panier' %}" class="{% if request.resolver_match.url_name == 'website_panier' %}active{% endif %}">Panier</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <a href="{% url 'website_panier' %}" class="btn-cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge">{{ cart_count|default:"0" }}</span>
+            </a>
+            <a href="{% url 'website_menu' %}" class="btn-commander-head">
+                Commander <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <button type="button" class="navbar-toggle-btn" id="navBurgerBtn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navMenuLinks">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="messages-wrapper-public">
+            {% for message in messages %}
+                <div class="alert-public {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer -->
+    <footer class="footer-custom">
+        <div class="footer-top-row">
+            <div class="footer-col">
+                <h3><i class="fa-solid fa-burger"></i> Délice Express</h3>
+                <p>Commandez vos plats préférés rapidement. Frais, généreux et savoureux !</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <p><a href="{% url 'website_home' %}" class="footer-link">Accueil</a></p>
+                <p><a href="{% url 'website_menu' %}" class="footer-link">Notre Menu</a></p>
+                <p><a href="{% url 'website_panier' %}" class="footer-link">Mon Panier</a></p>
+            </div>
+            <div class="footer-col">
+                <h4>Back-Office Staff</h4>
+                <p><a href="{% url 'connexion' %}" class="footer-link-staff"><i class="fa-solid fa-lock"></i> Connexion Personnel</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom-row">
+            &copy; 2026 Délice Express. Tous droits réservés.
+        </div>
+    </footer>
+
+    <script src="{% static 'js/panier.js' %}?v=2"></script>
+    <script src="{% static 'js/script.js' %}?v=2"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

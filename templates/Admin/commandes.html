@@ -1,37 +1,67 @@
-{% extends 'Base/base_admin.html' %}
+{% extends "Base/base_admin.html" %}
+{% load static %}
 
-{% block title %}Commandes — Délice Express{% endblock %}
-{% block page_title %}Commandes{% endblock %}
-{% block page_subtitle %}Suivi de toutes les commandes{% endblock %}
+{% block title %}Toutes les Commandes — Délice Express Admin{% endblock %}
 
 {% block content %}
+<div class="menu-page-header">
+    <div class="menu-page-header-title">
+        <h1>Historique &amp; Suivi des Commandes</h1>
+        <p>Filtrez par statut pour piloter la cuisine et la salle.</p>
+    </div>
+</div>
 
-    {# TODO: fichier vide dans la version fournie — structure à compléter selon le contexte passé par la vue #}
-    <table>
-        <thead>
-            <tr>
-                <th>N°</th>
-                <th>Type</th>
-                <th>Table</th>
-                <th>Total</th>
-                <th>Statut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for commande in commandes %}
-            <tr>
-                <td>#{{ commande.id }}</td>
-                <td>{{ commande.get_type_commande_display }}</td>
-                <td>{% if commande.table %}Table N°{{ commande.table.numero }}{% else %}—{% endif %}</td>
-                <td>{{ commande.total }} FCFA</td>
-                <td><span class="badge {{ commande.statut }}">{{ commande.get_statut_display }}</span></td>
-                <td class="actions"></td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="6" class="empty">Aucune commande pour le moment.</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="list-card-admin">
+    <div class="category-pills-bar">
+        <a href="{% url 'commandes_liste' %}" class="category-pill {% if not selected_statut %}active{% endif %}">Toutes</a>
+        <a href="?statut=en_attente" class="category-pill {% if selected_statut == 'en_attente' %}active{% endif %}">En attente</a>
+        <a href="?statut=preparation" class="category-pill {% if selected_statut == 'preparation' %}active{% endif %}">En préparation</a>
+        <a href="?statut=prete" class="category-pill {% if selected_statut == 'prete' %}active{% endif %}">Prêtes</a>
+        <a href="?statut=payee" class="category-pill {% if selected_statut == 'payee' %}active{% endif %}">Payées</a>
+    </div>
 
+    <div class="table-responsive-admin">
+        <table class="table-orders-admin">
+            <thead>
+                <tr>
+                    <th>Réf.</th>
+                    <th>Client</th>
+                    <th>Type</th>
+                    <th>Articles</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th class="order-action-cell">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cmd in commandes %}
+                    <tr>
+                        <td class="order-ref-cell">{{ cmd.reference }}</td>
+                        <td>
+                            {{ cmd.client_nom|default:"Anonyme" }}
+                            <span class="order-client-phone">{{ cmd.client_telephone }}</span>
+                        </td>
+                        <td>{% if cmd.table %}Table N°{{ cmd.table.numero }}{% else %}{{ cmd.get_type_commande_display }}{% endif %}</td>
+                        <td>
+                            {% for it in cmd.items.all %}
+                                {{ it.quantite }}x {{ it.menu_item.nom }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="order-total-cell">{{ cmd.total }} FCFA</td>
+                        <td><span class="badge-status {{ cmd.statut }}">{{ cmd.get_statut_display }}</span></td>
+                        <td class="order-action-cell">
+                            <a href="{% url 'caisse_pos' %}?order_id={{ cmd.id }}" class="btn-order-action">
+                                Détail / POS
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="table-orders-empty">Aucune commande correspondant à ce filtre.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

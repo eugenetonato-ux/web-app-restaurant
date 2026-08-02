@@ -1,17 +1,25 @@
 {% extends 'Base/base_admin.html' %}
+{% load static %}
 
-{% block title %}Supprimer une catégorie — Délice Express{% endblock %}
-{% block page_title %}Confirmer la suppression{% endblock %}
+{% block title %}Supprimer une catégorie — Délice Express Admin{% endblock %}
 
 {% block content %}
+<div class="form-card-admin form-card-admin--narrow">
+    <h2 style="color: #E8445C;">Confirmer la suppression</h2>
+    <p style="margin-bottom: 1.5rem;">
+        Voulez-vous vraiment supprimer la catégorie "<strong>{{ object.nom }}</strong>" ?
+    </p>
 
-    <form method="post" class="card-form">
+    <form method="POST">
         {% csrf_token %}
-        <p>Confirmer la suppression de "<strong>{{ object }}</strong>" ?</p>
-        <div class="btn-bar">
-            <button type="submit" class="btn danger">Oui, supprimer</button>
-            <a href="{% url 'menu_categories' %}" class="btn secondary">Annuler</a>
+        <div class="form-actions-row-admin">
+            <button type="submit" class="btn-checkout-pos danger">
+                Oui, Supprimer
+            </button>
+            <a href="{% url 'menu_categories' %}" class="btn-cancel-admin">
+                Annuler
+            </a>
         </div>
     </form>
-
+</div>
 {% endblock %}

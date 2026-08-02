@@ -1,62 +1,133 @@
-{% extends 'Base/base_admin.html' %}
+{% extends "Base/base_admin.html" %}
+{% load static %}
 
-{% block title %}Tableau de bord — Délice Express{% endblock %}
-{% block page_title %}Bonjour, {{ request.user.get_full_name|default:request.user.username }}{% endblock %}
-{% block page_subtitle %}Voici un aperçu de la journée{% endblock %}
+{% block title %}Dashboard — Délice Express Admin{% endblock %}
 
 {% block content %}
-
-    <div class="cards">
-        <div class="card ca">
-            <div class="label">Chiffre d'affaires du jour</div>
-            <div class="amount">{{ ca_du_jour|default:"0" }} FCFA</div>
+<!-- Banner Supérieure & Carte CA (Maquette 2) -->
+<div class="dashboard-top-hero">
+    <!-- Banner Vouchers / Promo -->
+    <div class="hero-banner-promo">
+        <div class="hero-banner-promo-text">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #F5A623; letter-spacing: 1px;">Service du Jour</span>
+            <h3 style="font-size: 1.6rem; font-weight: 800; margin: 0.4rem 0 0.6rem 0; color: white;">Get Discount Voucher Up To 20%</h3>
+            <p style="font-size: 0.85rem; opacity: 0.8; margin: 0;">Gérez le flux des commandes en direct et validez les encaissements à la caisse.</p>
         </div>
-        <div class="card">
-            <div class="label">Commandes du jour</div>
-            <div class="amount">{{ nombre_commandes_jour|default:"0" }}</div>
-        </div>
-        <div class="card">
-            <div class="label">Commandes en attente</div>
-            <div class="amount">{{ nombre_commandes_attente|default:"0" }}</div>
-        </div>
-        <div class="card">
-            <div class="label">Tables occupées</div>
-            <div class="amount">{{ tables_occupees|default:"0" }}</div>
-        </div>
+        <i class="fa-solid fa-bowl-rice" style="font-size: 4rem; color: #F5A623; opacity: 0.9;"></i>
     </div>
 
-    <div class="section-title">Commandes en cours</div>
-    <table>
+    <!-- Balance / CA du Jour Card (Maquette 2) -->
+    <div class="card-balance-ca">
+        <div>
+            <div class="ca-label">Balance / CA du Jour</div>
+            <div class="ca-amount">{{ ca_du_jour }} FCFA</div>
+            <div style="font-size: 0.8rem; color: #8A8A9E;">{{ nombre_commandes_jour }} commandes payées aujourd'hui</div>
+        </div>
+
+        <div class="ca-actions">
+            <a href="{% url 'reports_home' %}" class="btn-ca-action">
+                <i class="fa-solid fa-file-pdf"></i> Rapport PDF
+            </a>
+            <a href="{% url 'caisse_pos' %}" class="btn-ca-action" style="background: #3CC98C;">
+                <i class="fa-solid fa-cash-register"></i> Encaisser
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Pilules de Catégories Horizontales (Maquette 2) -->
+<div style="margin-bottom: 1rem; font-weight: 700; font-size: 1.1rem; color: #1E1E2D;">Catégories</div>
+<div class="category-pills-bar">
+    <a href="{% url 'dashboard_home' %}?cat=all" class="category-pill {% if selected_cat == 'all' %}active{% endif %}">
+        <i class="fa-solid fa-utensils"></i> Tous les plats
+    </a>
+    {% for cat in categories %}
+        <a href="{% url 'dashboard_home' %}?cat={{ cat.id }}" class="category-pill {% if selected_cat == cat.id|stringformat:'s' %}active{% endif %}">
+            <i class="fa-solid {{ cat.icone|default:'fa-burger' }}"></i> {{ cat.nom }}
+        </a>
+    {% endfor %}
+</div>
+
+<!-- Grille des Plats Populaires (Popular Dishes — Maquette 2) -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <div style="font-weight: 700; font-size: 1.1rem; color: #1E1E2D;">Popular Dishes</div>
+    <a href="{% url 'menu_articles' %}" style="color: #6C3CE9; font-weight: 700; font-size: 0.85rem; text-decoration: none;">Voir tout ></a>
+</div>
+
+<div class="admin-dishes-grid">
+    {% for dish in popular_dishes %}
+        <div class="dish-card-admin">
+            <img src="{{ dish.get_image_display }}" alt="{{ dish.nom }}" class="dish-img-admin">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                <span style="font-size: 0.8rem; color: #F5A623; font-weight: 700;"><i class="fa-solid fa-star"></i> {{ dish.note_etoiles }}</span>
+                {% if dish.badge %}
+                    <span style="background: #FDE8EA; color: #E8445C; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 8px;">{{ dish.badge }}</span>
+                {% endif %}
+            </div>
+
+            <div class="dish-title-admin">{{ dish.nom }}</div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 0.6rem;">
+                <div class="dish-price-admin">{{ dish.get_prix_effectif }} FCFA</div>
+                <a href="{% url 'menu_article_update' dish.id %}" class="btn-dish-add-admin" title="Modifier">
+                    <i class="fa-solid fa-pen"></i>
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <p style="grid-column: 1/-1; color: #8A8A9E;">Aucun plat populaire disponible.</p>
+    {% endfor %}
+</div>
+
+<!-- Commandes Récents / Dynamic Orders Table -->
+<div style="background: #FFFFFF; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+    <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">Suivi des Commandes Actives</div>
+
+    <div class="table-responsive-admin">
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
         <thead>
-            <tr>
-                <th>N°</th>
-                <th>Type</th>
+            <tr style="border-bottom: 2px solid #F3F4F6; color: #8A8A9E;">
+                <th style="padding: 0.8rem 0;">Référence</th>
+                <th>Client / Type</th>
                 <th>Table</th>
-                <th>Total</th>
+                <th>Montant</th>
                 <th>Statut</th>
+                <th style="text-align: right;">Action Rapide</th>
             </tr>
         </thead>
         <tbody>
-        {% for commande in commandes_en_cours %}
-            <tr>
-                <td>#{{ commande.id }}</td>
-                <td>{{ commande.get_type_commande_display }}</td>
-                <td>{% if commande.table %}Table N°{{ commande.table.numero }}{% else %}—{% endif %}</td>
-                <td>{{ commande.total }} FCFA</td>
-                <td><span class="badge {{ commande.statut }}">{{ commande.get_statut_display }}</span></td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="5" class="empty">Aucune commande en cours pour le moment.</td></tr>
-        {% endfor %}
+            {% for cmd in commandes_actives %}
+                <tr style="border-bottom: 1px solid #F3F4F6;">
+                    <td style="padding: 0.8rem 0; font-weight: 700;">{{ cmd.reference }}</td>
+                    <td>{{ cmd.client_nom|default:"Anonyme" }} ({{ cmd.get_type_commande_display }})</td>
+                    <td>{% if cmd.table %}Table N°{{ cmd.table.numero }}{% else %}-{% endif %}</td>
+                    <td style="font-weight: 700; color: #6C3CE9;">{{ cmd.total }} FCFA</td>
+                    <td><span class="badge-status {{ cmd.statut }}">{{ cmd.get_statut_display }}</span></td>
+                    <td style="text-align: right;">
+                        <form action="{% url 'dashboard_quick_status' cmd.id %}" method="POST" style="display: inline-flex; gap: 4px;">
+                            {% csrf_token %}
+                            {% if cmd.statut == 'en_attente' %}
+                                <input type="hidden" name="statut" value="preparation">
+                                <button type="submit" style="background: #F5A623; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Préparer</button>
+                            {% elif cmd.statut == 'preparation' %}
+                                <input type="hidden" name="statut" value="prete">
+                                <button type="submit" style="background: #3B82F6; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Prête</button>
+                            {% elif cmd.statut == 'prete' %}
+                                <input type="hidden" name="statut" value="servie">
+                                <button type="submit" style="background: #3CC98C; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Servir</button>
+                            {% endif %}
+                            <a href="{% url 'caisse_pos' %}?order_id={{ cmd.id }}" style="background: #6C3CE9; color: white; text-decoration: none; padding: 0.3rem 0.6rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700;">Encaisser</a>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 2rem; color: #8A8A9E;">Aucune commande active en cours.</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-
-    <div class="quick-links">
-        <a href="{% url 'menu_categories' %}">🍽️ Gérer le menu</a>
-        <a href="{% url 'tables_liste' %}">🪑 Gérer les tables</a>
-        <a href="{% url 'commandes_liste' %}">🧾 Voir les commandes</a>
-        <a href="#">💵 Caisse</a>
-        <a href="#">📊 Rapport journalier</a>
     </div>
-
+</div>
 {% endblock %}

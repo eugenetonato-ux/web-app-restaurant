@@ -1,0 +1,81 @@
+{% extends "Base/base_admin.html" %}
+{% load static %}
+
+{% block title %}Rapports Financiers — Délice Express Admin{% endblock %}
+
+{% block content %}
+<div class="menu-page-header">
+    <div class="menu-page-header-title">
+        <h1>Chiffre d'Affaires &amp; Rapports</h1>
+        <p>Consultez le bilan d'une journée ou d'une période, basé uniquement sur les commandes payées.</p>
+    </div>
+</div>
+
+<div class="reports-grid-admin">
+    <!-- Bilan de la période sélectionnée -->
+    <div class="report-card-admin">
+        {% if date_debut == date_fin %}
+            <h3>Bilan du {{ date_debut|date:"d/m/Y" }}</h3>
+        {% else %}
+            <h3>Bilan du {{ date_debut|date:"d/m/Y" }} au {{ date_fin|date:"d/m/Y" }}</h3>
+        {% endif %}
+
+        <form method="GET" class="report-date-filter-form">
+            <div class="report-date-field">
+                <label for="date_debut_filter">Du</label>
+                <input type="date" id="date_debut_filter" name="date_debut" value="{{ date_debut|date:'Y-m-d' }}">
+            </div>
+            <div class="report-date-field">
+                <label for="date_fin_filter">Au</label>
+                <input type="date" id="date_fin_filter" name="date_fin" value="{{ date_fin|date:'Y-m-d' }}">
+            </div>
+            <button type="submit">Filtrer</button>
+        </form>
+
+        <div class="report-ca-box">
+            <div class="report-ca-label">Chiffre d'Affaires Total (Payé)</div>
+            <div class="report-ca-amount">{{ stats.chiffre_affaires }} FCFA</div>
+            <div class="report-ca-meta">
+                <strong>{{ stats.nombre_commandes }}</strong> commandes • Ticket moyen : <strong>{{ stats.ticket_moyen|floatformat:0 }} FCFA</strong>
+            </div>
+        </div>
+
+        <form action="{% url 'generer_rapport' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="date_debut" value="{{ date_debut|date:'Y-m-d' }}">
+            <input type="hidden" name="date_fin" value="{{ date_fin|date:'Y-m-d' }}">
+            <button type="submit" class="btn-checkout-pos">
+                <i class="fa-solid fa-file-pdf"></i> Générer / Imprimer ce Rapport A4
+            </button>
+        </form>
+    </div>
+
+    <!-- Historique des Rapports Clôturés -->
+    <div class="report-card-admin">
+        <h3>Historique des Rapports Clôturés</h3>
+
+        <div class="report-history-list">
+            {% for rep in rapports_historique %}
+                <div class="report-history-item">
+                    <div>
+                        <div class="report-history-title">
+                            {% if rep.est_jour_unique %}
+                                Rapport du {{ rep.date_debut|date:"d/m/Y" }}
+                            {% else %}
+                                Rapport du {{ rep.date_debut|date:"d/m/Y" }} au {{ rep.date_fin_effective|date:"d/m/Y" }}
+                            {% endif %}
+                        </div>
+                        <div class="report-history-meta">{{ rep.nombre_commandes }} commandes • Généré par {{ rep.genere_par.username }}</div>
+                    </div>
+                    <div class="report-history-right">
+                        <div class="report-history-amount">{{ rep.chiffre_affaires }} FCFA</div>
+                        <a href="{% url 'rapport_imprimer' rep.id %}" target="_blank" class="report-history-link">Voir A4 →</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="report-history-empty">Aucun rapport généré jusqu'à présent.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

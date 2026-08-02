@@ -1,17 +1,43 @@
 {% extends 'Base/base_admin.html' %}
+{% load static %}
 
-{% block title %}{% if object %}Modifier la catégorie{% else %}Ajouter une catégorie{% endif %} — Délice Express{% endblock %}
-{% block page_title %}{% if object %}Modifier la catégorie{% else %}Ajouter une catégorie{% endif %}{% endblock %}
+{% block title %}{% if object %}Modifier la catégorie{% else %}Ajouter une catégorie{% endif %} — Délice Express Admin{% endblock %}
 
 {% block content %}
+<div class="form-card-admin">
+    <h2>{% if object %}Modifier "{{ object.nom }}"{% else %}Ajouter une Catégorie{% endif %}</h2>
 
-    <form method="post" enctype="multipart/form-data" class="card-form">
+    <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <div class="btn-bar">
-            <button type="submit" class="btn">Enregistrer</button>
-            <a href="{% url 'menu_categories' %}" class="btn secondary">Annuler</a>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Nom de la catégorie :</label>
+            {{ form.nom }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Ordre d'affichage :</label>
+            {{ form.ordre_affichage }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Icône FontAwesome (ex: fa-burger, fa-pizza-slice) :</label>
+            {{ form.icone }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Dégradé CSS (ex: linear-gradient(135deg, #8E5CF7, #A881FC)) :</label>
+            {{ form.couleur_card }}
+        </div>
+
+        <div class="form-checkbox-row-admin">
+            <label>{{ form.actif }} Catégorie active</label>
+        </div>
+
+        <div class="form-actions-row-admin">
+            <button type="submit" class="btn-checkout-pos" style="border: none;">Enregistrer</button>
+            <a href="{% url 'menu_categories' %}" class="btn-cancel-admin">Annuler</a>
         </div>
     </form>
-
+</div>
 {% endblock %}

@@ -1,0 +1,36 @@
+{% extends "Base/base_admin.html" %}
+{% load static %}
+
+{% block title %}Table — Délice Express Admin{% endblock %}
+
+{% block content %}
+<div class="form-card-admin">
+    <h2>{% if object %}Modifier la Table N°{{ object.numero }}{% else %}Ajouter une Table{% endif %}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Numéro de Table :</label>
+            {{ form.numero }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Capacité (Places) :</label>
+            {{ form.capacite }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Statut :</label>
+            {{ form.statut }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Emplacement :</label>
+            {{ form.emplacement }}
+        </div>
+
+        <button type="submit" class="btn-checkout-pos" style="border: none;">Enregistrer la Table</button>
+    </form>
+</div>
+{% endblock %}

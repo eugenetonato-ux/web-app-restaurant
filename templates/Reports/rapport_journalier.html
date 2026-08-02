@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport Financier — Délice Express{% if report.est_jour_unique %} ({{ report.date_debut|date:"d/m/Y" }}){% else %} ({{ report.date_debut|date:"d/m/Y" }} au {{ report.date_fin_effective|date:"d/m/Y" }}){% endif %}</title>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; font-size: 13px; margin: 0; padding: 15px; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #6C3CE9; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .header-right { text-align: right; }
+        .title { font-size: 22px; font-weight: bold; color: #6C3CE9; }
+        .stat-box { background: #F3EEFE; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .stat-item { text-align: center; flex: 1 1 140px; }
+        .stat-val { font-size: 20px; font-weight: bold; color: #6C3CE9; }
+        .table-scroll-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #DDD; padding: 8px; text-align: left; }
+        th { background: #6C3CE9; color: white; }
+        .no-print { text-align: center; margin-top: 20px; }
+        .print-btn { padding: 10px 20px; font-weight: bold; background: #6C3CE9; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .empty-row { text-align: center; }
+
+        /* Adaptation à l'écran (mobile / tablette) — n'affecte pas l'impression A4 */
+        @media screen and (max-width: 600px) {
+            body { font-size: 12px; padding: 10px; }
+            .header { flex-direction: column; }
+            .header-right { text-align: left; }
+            .title { font-size: 18px; }
+            .stat-box { flex-direction: column; text-align: left; }
+            .stat-item { text-align: left; }
+            table { min-width: 560px; }
+        }
+
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">DÉLICE EXPRESS</div>
+            <div>RAPPORT FINANCIER {% if report.est_jour_unique %}JOURNALIER{% else %}DE PÉRIODE{% endif %}</div>
+        </div>
+        <div class="header-right">
+            {% if report.est_jour_unique %}
+                <div><strong>Date du bilan :</strong> {{ report.date_debut|date:"d/m/Y" }}</div>
+            {% else %}
+                <div><strong>Période du bilan :</strong> du {{ report.date_debut|date:"d/m/Y" }} au {{ report.date_fin_effective|date:"d/m/Y" }}</div>
+            {% endif %}
+            <div><strong>Généré par :</strong> {{ report.genere_par.get_full_name|default:report.genere_par.username }}</div>
+        </div>
+    </div>
+
+    <div class="stat-box">
+        <div class="stat-item">
+            <div>Chiffre d'Affaires Total</div>
+            <div class="stat-val">{{ report.chiffre_affaires }} FCFA</div>
+        </div>
+        <div class="stat-item">
+            <div>Nombre de Commandes</div>
+            <div class="stat-val">{{ report.nombre_commandes }}</div>
+        </div>
+        <div class="stat-item">
+            <div>Ticket Moyen</div>
+            <div class="stat-val">{{ report.ticket_moyen|floatformat:0 }} FCFA</div>
+        </div>
+    </div>
+
+    <h3>Détail des Commandes Encaisssées ({{ stats.commandes.count }})</h3>
+    <div class="table-scroll-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Réf. Commande</th>
+                    <th>Date</th>
+                    <th>Heure</th>
+                    <th>Client / Type</th>
+                    <th>Mode Paiement</th>
+                    <th>Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cmd in stats.commandes %}
+                    <tr>
+                        <td><strong>{{ cmd.reference }}</strong></td>
+                        <td>{{ cmd.created_at|date:"d/m/Y" }}</td>
+                        <td>{{ cmd.created_at|date:"H:i" }}</td>
+                        <td>{{ cmd.client_nom|default:"Anonyme" }} ({% if cmd.table %}Table N°{{ cmd.table.numero }}{% else %}{{ cmd.get_type_commande_display }}{% endif %})</td>
+                        <td>{{ cmd.receipt.get_mode_paiement_display|default:"Espèces" }}</td>
+                        <td><strong>{{ cmd.total }} FCFA</strong></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-row">Aucune commande encaisssée pour cette période.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="no-print">
+        <button onclick="window.print()" class="print-btn">
+            🖨️ Imprimer Rapport A4 / Sauvegarder PDF
+        </button>
+    </div>
+</body>
+</html>

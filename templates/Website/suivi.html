@@ -1,0 +1,37 @@
+{% extends "Base/base.html" %}
+{% load static %}
+
+{% block title %}Suivi de Commande — Délice Express{% endblock %}
+
+{% block content %}
+<div style="padding: 3rem 5%; max-width: 700px; margin: 0 auto; text-align: center;">
+    <div class="public-card">
+        <i class="fa-solid fa-clock-rotate-left order-status-icon"></i>
+        <h1 class="order-status-title">Statut de la Commande</h1>
+        <p class="order-status-ref">Référence: {{ order.reference }}</p>
+
+        <div class="order-status-box">
+            <span class="order-status-box-label">Statut actuel :</span>
+            <span class="order-status-box-value">{{ order.get_statut_display }}</span>
+        </div>
+
+        <div class="order-detail-block">
+            <h3>Détail de votre commande</h3>
+            {% for item in order.items.all %}
+                <div class="order-detail-line">
+                    <span>{{ item.quantite }}x {{ item.menu_item.nom }}</span>
+                    <span style="font-weight: 700;">{{ item.sous_total }} FCFA</span>
+                </div>
+            {% endfor %}
+            <div class="order-detail-total">
+                <span>Total :</span>
+                <span>{{ order.total }} FCFA</span>
+            </div>
+        </div>
+
+        <a href="{% url 'website_home' %}" class="btn-back-home">
+            Retour à l'accueil
+        </a>
+    </div>
+</div>
+{% endblock %}

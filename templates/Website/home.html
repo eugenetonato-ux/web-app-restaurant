@@ -1,0 +1,141 @@
+{% extends "Base/base.html" %}
+{% load static %}
+
+{% block title %}Délice Express — Frais, Généreux & Savoureux{% endblock %}
+
+{% block content %}
+<!-- Section Hero Banner (Maquette 1) -->
+<section class="hero-section">
+    <div class="hero-grid">
+        <!-- Carte Principale Dorée / Jaune -->
+        <div class="hero-card-main">
+            <div class="hero-content-text">
+                <span class="hero-badge-tag">Fast Food</span>
+                <h1 class="hero-title">FRAIS, GÉNÉREUX &amp; SAVOUREUX</h1>
+                <p class="hero-subtitle">Savourez nos recettes artisanales préparées avec passion. Livraison rapide & commande sur place.</p>
+                <a href="{% url 'website_menu' %}" class="btn-hero-cta">Voir le menu <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            {% if plat_hero %}
+                <img src="{{ plat_hero.get_image_display }}" alt="{{ plat_hero.nom }}" class="hero-image-floating">
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80" alt="Burger" class="hero-image-floating">
+            {% endif %}
+        </div>
+
+        <!-- Cartes Latérales Empilées -->
+        <div class="hero-side-cards">
+            <div class="side-card-item">
+                <div>
+                    <span style="font-size: 0.72rem; font-weight: 700; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 1px;">Double Viande</span>
+                    <h3 style="margin: 0.3rem 0; font-size: 1.2rem; font-weight: 800; font-style: italic;">Burger de Bœuf</h3>
+                    <span style="font-size: 1.1rem; font-weight: 800; color: var(--wine); font-family: 'Playfair Display', serif;">8 500 FCFA</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=200&auto=format&fit=crop&q=80" alt="Burger de Bœuf" style="width: 90px; height: 90px; object-fit: cover; border-radius: 16px;">
+            </div>
+
+            <div class="side-card-item side-card-dark">
+                <div>
+                    <h3 style="margin: 0; color: white;">Fraîcheur, saveur,<br><span style="color: var(--gold-light);">livrées chaudes !</span></h3>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.8;">Chaud & directement à votre table ou domicile</p>
+                </div>
+                <i class="fa-solid fa-motorcycle" style="font-size: 2.5rem; color: var(--gold);"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section 4 Cartes de Catégories Colorées (Maquette 1) -->
+<section class="category-highlights-section" id="categories">
+    <div style="margin-bottom: 1.5rem;">
+        <span class="section-eyebrow">À la carte</span>
+        <h2 style="font-size: 1.9rem; font-weight: 800; font-style: italic; color: var(--ink); margin: 0;">Nos Catégories Vedettes</h2>
+    </div>
+
+    <div class="highlight-cards-grid">
+        <!-- Carte 1 Violette : Burgers -->
+        <div class="highlight-card purple">
+            <div class="highlight-card-title">Burger Grillé Double Fromage</div>
+            <a href="{% url 'website_menu' %}" class="btn-card-link">Commander <i class="fa-solid fa-arrow-right"></i></a>
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&auto=format&fit=crop&q=80" alt="Burger" class="highlight-card-img">
+        </div>
+
+        <!-- Carte 2 Jaune/Orange : Pizzas -->
+        <div class="highlight-card yellow">
+            <div class="highlight-card-title">Pizza Fondante & Généreuse</div>
+            <a href="{% url 'website_menu' %}" class="btn-card-link">Commander <i class="fa-solid fa-arrow-right"></i></a>
+            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300&auto=format&fit=crop&q=80" alt="Pizza" class="highlight-card-img">
+        </div>
+
+        <!-- Carte 3 Rouge : Desserts / Donuts -->
+        <div class="highlight-card red">
+            <div class="highlight-card-title">Nouveauté : Donuts Gourmands</div>
+            <a href="{% url 'website_menu' %}" class="btn-card-link">Commander <i class="fa-solid fa-arrow-right"></i></a>
+            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=300&auto=format&fit=crop&q=80" alt="Donuts" class="highlight-card-img">
+        </div>
+
+        <!-- Carte 4 Verte : Sandwiches / Salades -->
+        <div class="highlight-card green">
+            <div class="highlight-card-title">Sandwich Végétarien Frais & Savoureux</div>
+            <a href="{% url 'website_menu' %}" class="btn-card-link">Commander <i class="fa-solid fa-arrow-right"></i></a>
+            <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=300&auto=format&fit=crop&q=80" alt="Sandwich" class="highlight-card-img">
+        </div>
+    </div>
+</section>
+
+<!-- Section Plats Populaires / Discounted Goods (Maquette 1) -->
+<section class="products-section">
+    <div class="section-header-title">
+        <div>
+            <span class="section-eyebrow">Les incontournables</span>
+            <h2><i class="fa-solid fa-fire" style="color: var(--wine);"></i> Nos Plats Populaires</h2>
+            <p style="color: var(--text-muted); margin-top: 0.3rem; font-family: 'Poppins', sans-serif;">Sélectionnés pour leur goût unique et la fraîcheur de leurs ingrédients.</p>
+        </div>
+        <a href="{% url 'website_menu' %}" style="color: var(--wine); font-weight: 700; text-decoration: none; font-family: 'Poppins', sans-serif;">Tout afficher →</a>
+    </div>
+
+    <div class="product-grid">
+        {% for article in plats_populaires %}
+            <div class="product-card">
+                <div class="product-card-top">
+                    {% if article.badge %}
+                        <span class="product-badge-hot">{{ article.badge }}</span>
+                    {% elif article.est_promo %}
+                        <span class="product-badge-hot">PROMO</span>
+                    {% endif %}
+                    <span class="product-rating"><i class="fa-solid fa-star" style="color: var(--gold-dark);"></i> {{ article.note_etoiles }}</span>
+                    <img src="{{ article.get_image_display }}" alt="{{ article.nom }}" class="product-img">
+                </div>
+
+                <div>
+                    <h3 class="product-title">{{ article.nom }}</h3>
+                    <p class="product-desc">{{ article.description|default:"Ingrédients frais du jour et assaisonnement chef." }}</p>
+                </div>
+
+                <div class="product-card-bottom">
+                    <div class="product-price">{{ article.get_prix_effectif }} FCFA</div>
+                    <button type="button" class="btn-add-cart" onclick="addToCart({{ article.id }})">
+                        Ajouter +
+                    </button>
+                </div>
+            </div>
+        {% empty %}
+            <!-- Exemples statiques d'affichage si la BD est vide -->
+            <div class="product-card">
+                <div class="product-card-top">
+                    <span class="product-badge-hot">POPULAIRE</span>
+                    <span class="product-rating"><i class="fa-solid fa-star" style="color: var(--gold-dark);"></i> 4.8</span>
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&auto=format&fit=crop&q=80" alt="Délice Margherita" class="product-img">
+                </div>
+                <div>
+                    <h3 class="product-title">Délice Margherita</h3>
+                    <p class="product-desc">Sauce tomate artisanale, mozzarella fondante et basilic frais.</p>
+                </div>
+                <div class="product-card-bottom">
+                    <div class="product-price">3 500 FCFA</div>
+                    <button class="btn-add-cart" onclick="alert('Veuillez initialiser la base avec python manage.py migrate')">Ajouter +</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

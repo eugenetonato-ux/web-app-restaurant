@@ -1,0 +1,111 @@
+{% extends "Base/base.html" %}
+{% load static %}
+
+{% block title %}Votre Panier — Délice Express{% endblock %}
+
+{% block content %}
+<div style="padding: 2.5rem 5%; max-width: 1100px; margin: 0 auto;">
+    <span class="section-eyebrow">Finaliser</span>
+    <h1 style="font-size: 2.1rem; font-weight: 800; font-style: italic; margin: 0 0 2rem 0; color: var(--ink);">Mon Panier & Prise de Commande</h1>
+
+    {% if cart_items %}
+        <div class="panier-layout-grid">
+            <!-- Récapitulatif des articles -->
+            <div class="public-card">
+                <h3 style="margin-top: 0; font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem;">Articles sélectionnés</h3>
+
+                <div class="cart-items-list">
+                    {% for row in cart_items %}
+                        <div class="cart-item-row">
+                            <div class="cart-item-info">
+                                <img src="{{ row.item.get_image_display }}" alt="{{ row.item.nom }}" class="cart-item-img">
+                                <div>
+                                    <h4 class="cart-item-name">{{ row.item.nom }}</h4>
+                                    <p class="cart-item-unit-price">Prix unitaire: {{ row.prix_unitaire }} FCFA</p>
+                                </div>
+                            </div>
+                            <div class="cart-item-totals">
+                                <span class="cart-item-qty">x {{ row.quantite }}</span>
+                                <div class="cart-item-subtotal">{{ row.sous_total }} FCFA</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="cart-grand-total-row">
+                    <span class="cart-grand-total-label">Total Général :</span>
+                    <span class="cart-grand-total-value">{{ total_panier }} FCFA</span>
+                </div>
+            </div>
+
+            <!-- Formulaire de validation de la commande -->
+            <div class="public-card">
+                <h3 style="margin-top: 0; font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem;">Informations de commande</h3>
+
+                <form action="{% url 'website_checkout' %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="order-form-group">
+                        <label>Type de commande :</label>
+                        <select name="type_commande" id="type_commande_select" onchange="toggleTableSelect()">
+                            <option value="sur_place">Sur place (en salle)</option>
+                            <option value="emporter">À emporter</option>
+                            <option value="livraison">Livraison à domicile</option>
+                        </select>
+                    </div>
+
+                    <div class="order-form-group" id="table_select_group">
+                        <label>Sélectionnez votre Table :</label>
+                        <select name="table_id">
+                            <option value="">-- Choisir une table libre --</option>
+                            {% for table in tables_libres %}
+                                <option value="{{ table.id }}">Table N°{{ table.numero }} ({{ table.capacite }} pers. - {{ table.emplacement }})</option>
+                            {% empty %}
+                                <option value="">Aucune table libre enregistrée</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="order-form-group">
+                        <label>Votre Nom :</label>
+                        <input type="text" name="client_nom" placeholder="ex: Jean Dupont" required>
+                    </div>
+
+                    <div class="order-form-group">
+                        <label>Téléphone :</label>
+                        <input type="tel" name="client_telephone" placeholder="ex: +225 07 00 00 00" required>
+                    </div>
+
+                    <div class="order-form-group">
+                        <label>Remarques / Préférences :</label>
+                        <textarea name="notes" rows="2" placeholder="ex: Sans piment, servi bien chaud..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-order-submit">
+                        Valider ma commande <i class="fa-solid fa-check-circle"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart-box">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <h2>Votre panier est actuellement vide</h2>
+            <p>Parcourez notre carte et ajoutez vos plats préférés.</p>
+            <a href="{% url 'website_menu' %}" class="btn-discover-menu">Découvrir le Menu</a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleTableSelect() {
+    const val = document.getElementById('type_commande_select').value;
+    const grp = document.getElementById('table_select_group');
+    if (val === 'sur_place') {
+        grp.style.display = 'block';
+    } else {
+        grp.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

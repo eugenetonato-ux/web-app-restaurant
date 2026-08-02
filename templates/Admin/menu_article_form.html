@@ -1,17 +1,63 @@
-{% extends 'Base/base_admin.html' %}
+{% extends "Base/base_admin.html" %}
+{% load static %}
 
-{% block title %}{% if object %}Modifier l'article{% else %}Ajouter un article{% endif %} — Délice Express{% endblock %}
-{% block page_title %}{% if object %}Modifier l'article{% else %}Ajouter un article{% endif %}{% endblock %}
+{% block title %}Plat — Délice Express Admin{% endblock %}
 
 {% block content %}
+<div class="form-card-admin">
+    <h2>{% if object %}Modifier "{{ object.nom }}"{% else %}Ajouter un Plat au Menu{% endif %}</h2>
 
-    <form method="post" enctype="multipart/form-data" class="card-form">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <div class="btn-bar">
-            <button type="submit" class="btn">Enregistrer</button>
-            <a href="{% url 'menu_articles' %}" class="btn secondary">Annuler</a>
-        </div>
-    </form>
 
+        <div class="form-group-admin">
+            <label class="form-label-admin">Catégorie :</label>
+            {{ form.categorie }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Nom du Plat :</label>
+            {{ form.nom }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Description :</label>
+            {{ form.description }}
+        </div>
+
+        <div class="form-row-admin">
+            <div>
+                <label class="form-label-admin">Prix (FCFA) :</label>
+                {{ form.prix }}
+            </div>
+            <div>
+                <label class="form-label-admin">Prix Promo (FCFA) :</label>
+                {{ form.prix_promo }}
+            </div>
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Photo (Upload) :</label>
+            {{ form.photo }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">OU URL d'Image externe :</label>
+            {{ form.photo_url }}
+        </div>
+
+        <div class="form-group-admin">
+            <label class="form-label-admin">Badge spécial (ex: HOT, NEW, -20%) :</label>
+            {{ form.badge }}
+        </div>
+
+        <div class="form-checkbox-row-admin">
+            <label>{{ form.disponible }} Disponible</label>
+            <label>{{ form.est_populaire }} Marquer Populaire</label>
+            <label>{{ form.est_promo }} Marquer en Promo</label>
+        </div>
+
+        <button type="submit" class="btn-checkout-pos" style="border: none;">Enregistrer le Plat</button>
+    </form>
+</div>
 {% endblock %}

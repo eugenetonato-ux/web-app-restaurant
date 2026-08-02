@@ -1,236 +1,160 @@
-<!-- templates/Base/base_admin.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Délice Express — Admin{% endblock %}</title>
-    <style>
-        :root {
-            --primary: #6C3CE9;
-            --primary-light: #F3EEFE;
-            --bg: #F7F7FB;
-            --success: #3CC98C;
-            --warning: #F5A623;
-            --danger: #E8445C;
-            --text: #1E1E2D;
-            --text-secondary: #8A8A9E;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            min-height: 100vh;
-        }
+    <title>{% block title %}Délice Express — Administration{% endblock %}</title>
 
-        /* Sidebar */
-        .sidebar {
-            width: 240px;
-            background: var(--primary);
-            color: #fff;
-            padding: 24px 16px;
-            flex-shrink: 0;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-        }
-        .sidebar h2 { font-size: 20px; margin-bottom: 32px; }
-        .sidebar nav a {
-            display: block;
-            color: #E4DAFB;
-            text-decoration: none;
-            padding: 12px 14px;
-            border-radius: 10px;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-        }
-        .sidebar .logout {
-            margin-top: 40px;
-            display: block;
-            color: #FBD1D1;
-            text-decoration: none;
-            font-size: 13px;
-        }
-
-        /* Main */
-        .main { flex: 1; padding: 32px; }
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
-        }
-        .topbar h1 { font-size: 22px; }
-        .topbar p { color: var(--text-secondary); font-size: 14px; }
-
-        /* Cartes génériques (dashboard, stats...) */
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-        .card.ca { background: var(--primary); color: #fff; }
-        .card.ca .label { font-size: 13px; opacity: 0.85; }
-        .card.ca .amount { font-size: 28px; font-weight: 700; margin: 8px 0; }
-        .card .label { font-size: 13px; color: var(--text-secondary); }
-        .card .amount { font-size: 24px; font-weight: 700; margin: 8px 0; }
-
-        .section-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
-
-        /* Tables (listes : catégories, articles, commandes...) */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            margin-bottom: 24px;
-        }
-        thead { background: var(--primary-light); }
-        th, td { text-align: left; padding: 12px 16px; font-size: 14px; }
-        tbody tr:not(:last-child) { border-bottom: 1px solid #F0F0F5; }
-        .empty { color: var(--text-secondary); padding: 20px; text-align: center; }
-
-        /* Badges de statut */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .badge.en_attente, .badge.preparation { background: #FDECC8; color: #A9700B; }
-        .badge.prete, .badge.payee { background: #DFF7EC; color: #1F8F5F; }
-        .badge.servie { background: #E7E7F5; color: #4B4B70; }
-        .badge.annulee { background: #FBDEDE; color: #B23A3A; }
-        .badge.libre { background: #DFF7EC; color: #1F8F5F; }
-        .badge.occupee { background: #FBDEDE; color: #B23A3A; }
-        .badge.reservee { background: #FDECC8; color: #A9700B; }
-
-        /* Boutons */
-        .btn {
-            display: inline-block;
-            padding: 10px 18px;
-            border-radius: 10px;
-            background: var(--primary);
-            color: #fff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:hover { opacity: 0.9; }
-        .btn.secondary { background: #fff; color: var(--text); border: 1px solid #E0E0EA; }
-        .btn.danger { background: var(--danger); }
-        .btn-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; }
-
-        .actions a { margin-right: 10px; font-size: 13px; color: var(--primary); text-decoration: none; }
-        .actions a.danger { color: var(--danger); }
-
-        /* Formulaires */
-        form.card-form {
-            background: #fff;
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            max-width: 560px;
-        }
-        form.card-form p { margin-bottom: 16px; }
-        form.card-form label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
-        form.card-form input,
-        form.card-form select,
-        form.card-form textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #E0E0EA;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        /* Messages */
-        .messages { margin-bottom: 20px; }
-        .messages p {
-            background: var(--primary-light);
-            color: var(--primary);
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        /* Quick links (dashboard) */
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px;
-            margin-top: 32px;
-        }
-        .quick-links a {
-            background: #fff;
-            border-radius: 16px;
-            padding: 18px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text);
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-        .quick-links a:hover { background: var(--primary-light); }
-
-        {% block extra_css %}{% endblock %}
-    </style>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-    <aside class="sidebar">
-        <h2>Délice Express</h2>
-        <nav>
-            <a href="{% url 'dashboard_home' %}" class="{% if active_page == 'dashboard' %}active{% endif %}">Dashboard</a>
-            <a href="{% url 'menu_categories' %}" class="{% if active_page == 'menu' %}active{% endif %}">Menu</a>
-            <a href="{% url 'tables_liste' %}" class="{% if active_page == 'tables' %}active{% endif %}">Tables</a>
-            <a href="{% url 'commandes_liste' %}" class="{% if active_page == 'commandes' %}active{% endif %}">Commandes</a>
-            <a href="#" class="{% if active_page == 'caisse' %}active{% endif %}">Caisse</a>
-            <a href="#" class="{% if active_page == 'rapports' %}active{% endif %}">Rapports</a>
-        </nav>
-        <a href="{% url 'deconnexion' %}" class="logout">Se déconnecter</a>
-    </aside>
+<div class="admin-app-layout">
+    <!-- Overlay mobile affiché derrière la sidebar quand elle est ouverte -->
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
 
-    <main class="main">
-        <div class="topbar">
-            <div>
-                <h1>{% block page_title %}Tableau de bord{% endblock %}</h1>
-                <p>{% block page_subtitle %}{% endblock %}</p>
-            </div>
-            {% block topbar_actions %}{% endblock %}
+    <!-- Sidebar Fixe Violette (Maquette 2) -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-nav-scroll">
+            <a href="{% url 'dashboard_home' %}" class="sidebar-brand">
+                <i class="fa-solid fa-utensils"></i> FoodMeal.
+            </a>
+
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <a href="{% url 'dashboard_home' %}">
+                        <i class="fa-solid fa-table-cells-large"></i> Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-nav-item {% if active_page == 'commandes' %}active{% endif %}">
+                    <a href="{% url 'commandes_liste' %}">
+                        <i class="fa-solid fa-burger"></i> Commandes
+                    </a>
+                </li>
+                <li class="sidebar-nav-item {% if active_page == 'menu' %}active{% endif %}">
+                    <a href="{% url 'menu_articles' %}">
+                        <i class="fa-solid fa-book-open"></i> Gestion Menu
+                    </a>
+                </li>
+                <li class="sidebar-nav-item {% if active_page == 'tables' %}active{% endif %}">
+                    <a href="{% url 'tables_liste' %}">
+                        <i class="fa-solid fa-chair"></i> Tables
+                    </a>
+                </li>
+                <li class="sidebar-nav-item {% if active_page == 'caisse' %}active{% endif %}">
+                    <a href="{% url 'caisse_pos' %}">
+                        <i class="fa-solid fa-cash-register"></i> Caisse POS
+                    </a>
+                </li>
+                <li class="sidebar-nav-item {% if active_page == 'rapports' %}active{% endif %}">
+                    <a href="{% url 'reports_home' %}">
+                        <i class="fa-solid fa-chart-line"></i> Rapports CA
+                    </a>
+                </li>
+            </ul>
         </div>
 
+        <div class="sidebar-promo-box">
+            <h4>Délice Express POS</h4>
+            <p>Connecté en tant que <strong>{{ user.get_full_name|default:user.username }}</strong></p>
+            <a href="{% url 'deconnexion' %}" class="btn-logout-admin">
+                <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+            </a>
+        </div>
+    </aside>
+
+    <!-- Zone Centrale Principale -->
+    <main class="admin-main-content">
+        <!-- Top Bar Header -->
+        <header class="admin-top-header">
+            <button type="button" class="admin-sidebar-toggle-btn" id="adminBurgerBtn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="adminSidebar">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="header-user-welcome">
+                <h2>Bonjour, {{ user.first_name|default:user.username }} 👋</h2>
+                <span style="font-size: 0.85rem; color: #8A8A9E;">Aperçu des performances du service aujourd'hui</span>
+            </div>
+
+            <div class="header-search-bar" id="adminSearchBar" data-search-url="{% url 'dashboard_search_api' %}">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="adminSearchInput" placeholder="Rechercher un plat, une commande..." autocomplete="off">
+                <div class="header-search-results" id="adminSearchResults"></div>
+            </div>
+
+            <div class="header-actions-admin">
+                <a href="{% url 'website_home' %}" target="_blank" class="btn-site-public-admin">
+                    <i class="fa-solid fa-globe"></i> Site Public
+                </a>
+            </div>
+        </header>
+
         {% if messages %}
-            <div class="messages">
-                {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+            <div class="messages-wrapper-admin">
+                {% for message in messages %}
+                    <div class="alert-admin {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             </div>
         {% endif %}
 
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </main>
 
+    <!-- Panneau Droit (Order Menu / Caisse POS) -->
+    <aside class="admin-right-panel">
+        {% block right_panel %}
+            <div>
+                <div class="right-panel-title">
+                    <span>Order Menu</span>
+                    <i class="fa-solid fa-cart-shopping" style="color: #6C3CE9;"></i>
+                </div>
+
+                <div class="order-menu-list">
+                    {% for order in commandes_actives|slice:":5" %}
+                        <div class="order-menu-item">
+                            <div class="order-item-info">
+                                <div class="order-item-avatar">
+                                    #{{ forloop.counter }}
+                                </div>
+                                <div>
+                                    <div class="order-item-title">{{ order.reference }}</div>
+                                    <div class="order-item-qty">
+                                        {% if order.table %}Table N°{{ order.table.numero }}{% else %}{{ order.get_type_commande_display }}{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-item-right">
+                                <div class="order-item-price">{{ order.total }} FCFA</div>
+                                <span class="badge-status {{ order.statut }}">{{ order.get_statut_display }}</span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p style="text-align: center; color: #8A8A9E; padding: 2rem 0;">Aucune commande en cours.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="order-summary-box">
+                <div class="summary-row">
+                    <span>Total Commandes du Jour</span>
+                    <span style="font-weight: 700;">{{ ca_du_jour|default:"0" }} FCFA</span>
+                </div>
+                <a href="{% url 'caisse_pos' %}" class="btn-checkout-pos">
+                    Ouvrir Caisse POS <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        {% endblock %}
+    </aside>
+</div>
+
+<script src="{% static 'js/script.js' %}"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

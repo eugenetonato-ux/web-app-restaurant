@@ -1,55 +1,52 @@
-{% extends 'Base/base_admin.html' %}
+{% extends "Base/base_admin.html" %}
+{% load static %}
 
-{% block title %}Articles du menu — Délice Express{% endblock %}
-{% block page_title %}Articles du menu{% endblock %}
-{% block page_subtitle %}Gérez les articles proposés à la carte{% endblock %}
-
-{% block topbar_actions %}
-    <a href="{% url 'menu_article_ajouter' %}" class="btn">+ Ajouter un article</a>
-{% endblock %}
+{% block title %}Gestion du Menu — Délice Express Admin{% endblock %}
 
 {% block content %}
+<div class="menu-page-header">
+    <div class="menu-page-header-title">
+        <h1>Articles du Menu</h1>
+        <p>Ajoutez et gérez la carte des plats, prix FCFA et promotions.</p>
+    </div>
+    <div class="menu-page-header-actions">
+        <a href="{% url 'menu_categories' %}" class="btn-menu-secondary">
+            Catégories
+        </a>
+        <a href="{% url 'menu_article_create' %}" class="btn-menu-primary">
+            + Ajouter un Plat
+        </a>
+    </div>
+</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Photo</th>
-                <th>Nom</th>
-                <th>Catégorie</th>
-                <th>Prix (FCFA)</th>
-                <th>Disponible</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for article in articles %}
-            <tr>
-                <td>
-                    {% if article.photo %}
-                        <img src="{{ article.photo.url }}" alt="{{ article.nom }}" width="60" style="border-radius: 8px;">
-                    {% else %}
-                        —
-                    {% endif %}
-                </td>
-                <td>{{ article.nom }}</td>
-                <td>{{ article.categorie.nom }}</td>
-                <td>{{ article.prix }} FCFA</td>
-                <td>
-                    {% if article.disponible %}
-                        <span class="badge libre">Oui</span>
-                    {% else %}
-                        <span class="badge annulee">Non</span>
-                    {% endif %}
-                </td>
-                <td class="actions">
-                    <a href="{% url 'menu_article_modifier' article.pk %}">Modifier</a>
-                    <a href="{% url 'menu_article_supprimer' article.pk %}" class="danger">Supprimer</a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="6" class="empty">Aucun article pour le moment.</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="admin-dishes-grid">
+    {% for article in articles %}
+        <div class="dish-card-admin">
+            <img src="{{ article.get_image_display }}" alt="{{ article.nom }}" class="dish-img-admin">
 
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #8A8A9E;">{{ article.categorie.nom }}</span>
+                {% if article.disponible %}
+                    <span style="background: #E6F9F0; color: #3CC98C; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 8px;">Disponible</span>
+                {% else %}
+                    <span style="background: #FDE8EA; color: #E8445C; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 8px;">Masqué</span>
+                {% endif %}
+            </div>
+
+            <div class="dish-title-admin">{{ article.nom }}</div>
+            <p style="font-size: 0.8rem; color: #8A8A9E; margin: 0 0 0.8rem 0; line-height: 1.3;">{{ article.description|truncatewords:10 }}</p>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto;">
+                <div class="dish-price-admin">{{ article.get_prix_effectif }} FCFA</div>
+                <div style="display: flex; gap: 6px;">
+                    <a href="{% url 'menu_article_update' article.id %}" class="btn-dish-add-admin" title="Modifier">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p style="grid-column: 1/-1; color: #8A8A9E; text-align: center; padding: 2rem;">Aucun article de menu enregistré.</p>
+    {% endfor %}
+</div>
 {% endblock %}

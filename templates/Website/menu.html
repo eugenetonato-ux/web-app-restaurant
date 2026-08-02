@@ -1,0 +1,55 @@
+{% extends "Base/base.html" %}
+{% load static %}
+
+{% block title %}Notre Menu — Délice Express{% endblock %}
+
+{% block content %}
+<div style="padding: 2.5rem 5%;">
+    <div class="menu-page-header-public">
+        <span class="section-eyebrow" style="justify-content: center;">Délice Express</span>
+        <h1>Notre Carte & Menu</h1>
+        <p>Découvrez notre sélection gourmande préparée à la commande.</p>
+    </div>
+
+    <!-- Filtres par catégorie -->
+    <div class="menu-category-filters">
+        <a href="{% url 'website_menu' %}" class="menu-category-pill {% if not selected_category %}active{% endif %}">
+            Tous les articles
+        </a>
+        {% for cat in categories %}
+            <a href="{% url 'website_menu' %}?category={{ cat.slug }}" class="menu-category-pill {% if selected_category and selected_category.id == cat.id %}active{% endif %}">
+                {{ cat.nom }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Grille des articles -->
+    <div class="product-grid">
+        {% for article in articles %}
+            <div class="product-card">
+                <div class="product-card-top">
+                    {% if article.badge %}
+                        <span class="product-badge-hot">{{ article.badge }}</span>
+                    {% endif %}
+                    <span class="product-rating"><i class="fa-solid fa-star" style="color: var(--gold-dark);"></i> {{ article.note_etoiles }}</span>
+                    <img src="{{ article.get_image_display }}" alt="{{ article.nom }}" class="product-img">
+                </div>
+
+                <div>
+                    <h3 class="product-title">{{ article.nom }}</h3>
+                    <p class="product-desc">{{ article.description|default:"Recette maison préparée minute." }}</p>
+                </div>
+
+                <div class="product-card-bottom">
+                    <div class="product-price">{{ article.get_prix_effectif }} FCFA</div>
+                    <button type="button" class="btn-add-cart" onclick="addToCart({{ article.id }})">
+                        Ajouter +
+                    </button>
+                </div>
+            </div>
+        {% empty %}
+            <p class="menu-empty-state">Aucun article trouvé dans cette catégorie.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

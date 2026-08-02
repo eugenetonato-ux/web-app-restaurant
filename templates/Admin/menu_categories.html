@@ -1,43 +1,60 @@
 {% extends 'Base/base_admin.html' %}
+{% load static %}
 
-{% block title %}Catégories — Délice Express{% endblock %}
-{% block page_title %}Catégories{% endblock %}
-{% block page_subtitle %}Gérez les catégories du menu{% endblock %}
-
-{% block topbar_actions %}
-    <a href="{% url 'menu_categorie_ajouter' %}" class="btn">+ Ajouter une catégorie</a>
-{% endblock %}
+{% block title %}Catégories du Menu — Délice Express Admin{% endblock %}
 
 {% block content %}
+<div class="menu-page-header">
+    <div class="menu-page-header-title">
+        <h1>Catégories du Menu</h1>
+        <p>Gérez les rayons et catégories du menu.</p>
+    </div>
+    <div class="menu-page-header-actions">
+        <a href="{% url 'menu_articles' %}" class="btn-menu-secondary">
+            Articles du Menu
+        </a>
+        <a href="{% url 'menu_categorie_create' %}" class="btn-menu-primary">
+            + Ajouter une Catégorie
+        </a>
+    </div>
+</div>
 
-    <table>
+<div style="background: #FFFFFF; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+    <div class="table-responsive-admin">
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
         <thead>
-            <tr>
-                <th>Nom</th>
+            <tr style="border-bottom: 2px solid #F3F4F6; color: #8A8A9E;">
+                <th style="padding: 0.8rem 0;">Icône / Nom</th>
+                <th>Ordre</th>
                 <th>Statut</th>
-                <th>Actions</th>
+                <th style="text-align: right;">Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for cat in categories %}
-            <tr>
-                <td>{{ cat.nom }}</td>
+            <tr style="border-bottom: 1px solid #F3F4F6;">
+                <td style="padding: 1rem 0; font-weight: 700;">
+                    <i class="fa-solid {{ cat.icone|default:'fa-utensils' }}" style="color: #6C3CE9; margin-right: 8px;"></i>
+                    {{ cat.nom }}
+                </td>
+                <td>{{ cat.ordre_affichage }}</td>
                 <td>
                     {% if cat.actif %}
-                        <span class="badge libre">Actif</span>
+                        <span class="badge-status libre">Actif</span>
                     {% else %}
-                        <span class="badge annulee">Inactif</span>
+                        <span class="badge-status annulee">Inactif</span>
                     {% endif %}
                 </td>
-                <td class="actions">
-                    <a href="{% url 'menu_categorie_modifier' cat.pk %}">Modifier</a>
-                    <a href="{% url 'menu_categorie_supprimer' cat.pk %}" class="danger">Supprimer</a>
+                <td style="text-align: right;">
+                    <a href="{% url 'menu_categorie_update' cat.pk %}" style="color: #6C3CE9; font-weight: 700; text-decoration: none; margin-right: 12px;">Modifier</a>
+                    <a href="{% url 'menu_categorie_delete' cat.pk %}" style="color: #E8445C; font-weight: 700; text-decoration: none;">Supprimer</a>
                 </td>
             </tr>
         {% empty %}
-            <tr><td colspan="3" class="empty">Aucune catégorie pour le moment.</td></tr>
+            <tr><td colspan="4" style="text-align: center; padding: 2rem; color: #8A8A9E;">Aucune catégorie pour le moment.</td></tr>
         {% endfor %}
         </tbody>
     </table>
-
+    </div>
+</div>
 {% endblock %}

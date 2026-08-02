@@ -1,33 +1,44 @@
-{% extends 'Base/base_admin.html' %}
+{% extends "Base/base_admin.html" %}
+{% load static %}
 
-{% block title %}Tables — Délice Express{% endblock %}
-{% block page_title %}Tables{% endblock %}
-{% block page_subtitle %}Gérez les tables du restaurant{% endblock %}
+{% block title %}Gestion des Tables — Délice Express Admin{% endblock %}
 
 {% block content %}
+<div class="menu-page-header">
+    <div class="menu-page-header-title">
+        <h1>Plan des Tables du Restaurant</h1>
+        <p>Suivi en direct des tables libres, occupées et réservées.</p>
+    </div>
+    <div class="menu-page-header-actions">
+        <a href="{% url 'table_create' %}" class="btn-menu-primary">+ Ajouter une Table</a>
+    </div>
+</div>
 
-    {# TODO: fichier vide dans la version fournie — structure à compléter selon le contexte passé par la vue #}
-    <table>
-        <thead>
-            <tr>
-                <th>N° de table</th>
-                <th>Capacité</th>
-                <th>Statut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for table in tables %}
-            <tr>
-                <td>Table N°{{ table.numero }}</td>
-                <td>{{ table.capacite }}</td>
-                <td><span class="badge {{ table.statut }}">{{ table.get_statut_display }}</span></td>
-                <td class="actions"></td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="4" class="empty">Aucune table pour le moment.</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<!-- Grille des Tables -->
+<div class="tables-grid-admin">
+    {% for table in tables %}
+        <div class="table-card-admin {{ table.statut }}">
+            <div class="table-card-header">
+                <h3>Table N°{{ table.numero }}</h3>
+                <span class="badge-status {{ table.statut }}">{{ table.get_statut_display }}</span>
+            </div>
 
+            <p class="table-card-meta">
+                <i class="fa-solid fa-users"></i> {{ table.capacite }} personnes • {{ table.emplacement }}
+            </p>
+
+            <form action="{% url 'table_change_status' table.id %}" method="POST" class="table-status-actions">
+                {% csrf_token %}
+                {% if table.statut != 'libre' %}
+                    <button type="submit" name="statut" value="libre" class="btn-table-status free">Libérer</button>
+                {% endif %}
+                {% if table.statut != 'occupee' %}
+                    <button type="submit" name="statut" value="occupee" class="btn-table-status occupy">Occuper</button>
+                {% endif %}
+            </form>
+        </div>
+    {% empty %}
+        <p class="tables-grid-empty">Aucune table enregistrée.</p>
+    {% endfor %}
+</div>
 {% endblock %}
