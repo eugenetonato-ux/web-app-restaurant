@@ -12,6 +12,7 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    {% csrf_token %}
 
     <!-- En-tête Navbar (Inspiré Maquette 1) -->
     <header class="navbar-custom">

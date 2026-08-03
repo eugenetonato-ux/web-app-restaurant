@@ -1,0 +1,1433 @@
+/* static/css/admin.css — Design du Back-Office Admin Délice Express (Fidèle Maquette 2 FoodMeal) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --admin-purple: #6C3CE9;
+    --admin-purple-dark: #5829D6;
+    --admin-purple-light: #F3EEFE;
+    --admin-bg: #F7F7FB;
+    --admin-card-bg: #FFFFFF;
+    --admin-text-dark: #1E1E2D;
+    --admin-text-muted: #8A8A9E;
+    --admin-green: #3CC98C;
+    --admin-orange: #F5A623;
+    --admin-red: #E8445C;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden; /* empêche le body de scroller — chaque colonne gère son propre scroll */
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--admin-bg);
+    color: var(--admin-text-dark);
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout Grid Container */
+.admin-app-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr 340px;
+    height: 100vh;      /* fallback pour anciens navigateurs */
+    height: 100dvh;     /* hauteur FIXE (et non min-height) : le conteneur ne grandit plus avec le contenu — dvh s'adapte à la barre d'adresse mobile */
+    overflow: hidden;
+}
+
+/* Sidebar Fixe Violette (Maquette 2) */
+.admin-sidebar {
+    background: var(--admin-purple);
+    color: white;
+    padding: 2rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 25px rgba(108, 60, 233, 0.15);
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden; /* le scroll se fait dans .sidebar-nav-scroll, pas ici */
+}
+
+/* Zone haute (logo + navigation) : seule cette zone défile si elle dépasse */
+.sidebar-nav-scroll {
+    flex: 1 1 auto;
+    min-height: 0; /* indispensable pour que overflow-y fonctionne dans un flex-item */
+    overflow-y: auto;
+}
+
+.sidebar-brand {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2.5rem;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav-item a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0.85rem 1.2rem;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 16px;
+    transition: all 0.25s ease;
+}
+
+.sidebar-nav-item.active a, .sidebar-nav-item a:hover {
+    background: #FFFFFF;
+    color: var(--admin-purple);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-promo-box {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.2rem;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0; /* ne rétrécit jamais, toujours visible en bas de la sidebar */
+    margin-top: 1rem;
+    margin-bottom: 50px !important;
+}
+
+.sidebar-promo-box h4 {
+    margin: 0 0 0.4rem 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.sidebar-promo-box p {
+    margin: 0 0 1rem 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Central Main Content Area */
+.admin-main-content {
+    padding: 2rem;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto; /* seule cette colonne défile lors de la navigation dans le contenu */
+}
+
+/* Top Header Bar */
+.admin-top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 0.8rem;
+    margin-bottom: 2rem;
+}
+
+.header-user-welcome {
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+.header-user-welcome h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.header-search-bar {
+    position: relative;
+    flex: 1 1 260px;
+    max-width: 380px;
+    min-width: 180px;
+}
+
+.header-search-bar input {
+    width: 100%;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: none;
+    padding: 0.75rem 1.2rem 0.75rem 2.8rem;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    outline: none;
+}
+
+.header-search-bar i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--admin-text-muted);
+}
+
+/* Dropdown de résultats de la recherche admin en direct */
+.header-search-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+    max-height: 380px;
+    overflow-y: auto;
+    z-index: 50;
+    padding: 0.5rem;
+}
+
+.header-search-results.open {
+    display: block;
+}
+
+.search-section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--admin-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.6rem 0.7rem 0.3rem;
+}
+
+.search-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease;
+}
+
+.search-result-item:hover {
+    background: var(--admin-purple-light);
+}
+
+.search-result-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.search-result-sub {
+    font-size: 0.78rem;
+    color: var(--admin-text-muted);
+    margin-top: 0.15rem;
+}
+
+.search-result-right {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.search-result-amount {
+    display: block;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--admin-purple);
+}
+
+.search-result-badge {
+    display: inline-block;
+    margin-top: 0.2rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--admin-text-muted);
+}
+
+.search-result-badge.unavailable {
+    color: var(--admin-red);
+}
+
+.search-empty {
+    padding: 1rem 0.7rem;
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+    text-align: center;
+}
+
+/* Top Banner / CA Widget */
+.dashboard-top-hero {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.hero-banner-promo {
+    background: linear-gradient(135deg, #2D1B69 0%, #4C2899 100%);
+    border-radius: 24px;
+    padding: 1.8rem 2.2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-balance-ca {
+    background: var(--admin-purple-light);
+    border-radius: 24px;
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ca-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--admin-text-muted);
+}
+
+.ca-amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--admin-purple);
+    margin: 0.3rem 0 1rem 0;
+}
+
+.ca-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.btn-ca-action {
+    background: var(--admin-purple);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Category Pills Bar (Maquette 2) */
+.category-pills-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.category-pill {
+    background: #FFFFFF;
+    border-radius: 18px;
+    padding: 0.7rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #4B5563;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.category-pill.active, .category-pill:hover {
+    background: var(--admin-purple);
+    color: white;
+    box-shadow: 0 6px 20px rgba(108, 60, 233, 0.3);
+}
+
+/* Grid of Popular Dishes */
+.admin-dishes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
+    margin-bottom: 2rem;
+}
+
+.dish-card-admin {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 1.2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.dish-img-admin {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+}
+
+.dish-title-admin {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.dish-price-admin {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--admin-purple);
+}
+
+.btn-dish-add-admin {
+    background: var(--admin-purple);
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+}
+
+/* Right Section Panel (Order Menu / POS Caisse) */
+.admin-right-panel {
+    background: #FFFFFF;
+    padding: 2rem 1.5rem;
+    border-left: 1px solid #E5E7EB;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto; /* la liste "Order Menu" défile indépendamment du centre */
+}
+
+.right-panel-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.order-menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.order-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.order-item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.order-item-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.order-item-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.order-item-qty {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+}
+
+.order-item-price {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.order-summary-box {
+    background: var(--admin-purple-light);
+    border-radius: 20px;
+    padding: 1.4rem;
+    margin-top: auto;
+    margin-bottom: 50px !important;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+    font-size: 0.9rem;
+}
+
+.summary-total {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--admin-purple);
+    border-top: 1px solid rgba(108, 60, 233, 0.2);
+    padding-top: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.btn-checkout-pos {
+    background: var(--admin-purple);
+    color: white;
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+    box-shadow: 0 8px 25px rgba(108, 60, 233, 0.3);
+    transition: background 0.2s;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+}
+
+.btn-checkout-pos:hover {
+    background: var(--admin-purple-dark);
+    color: white;
+}
+
+/* Badges de Statut */
+.badge-status {
+    padding: 0.35rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.badge-status.libre, .badge-status.payee { background: #E6F9F0; color: #3CC98C; }
+.badge-status.occupee, .badge-status.preparation { background: #FFF4E5; color: #F5A623; }
+.badge-status.reservee, .badge-status.en_attente { background: #EBF3FE; color: #3B82F6; }
+.badge-status.annulee { background: #FDE8EA; color: #E8445C; }
+
+/* Bouton de bascule Disponible / Rupture (fiches plats) */
+.toggle-dispo-form {
+    display: inline-block;
+}
+
+.btn-toggle-dispo {
+    border: none;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-toggle-dispo:hover {
+    transform: translateY(-1px);
+}
+
+.btn-toggle-dispo.dispo {
+    background: #E6F9F0;
+    color: var(--admin-green);
+}
+
+.btn-toggle-dispo.rupture {
+    background: #FDE8EA;
+    color: var(--admin-red);
+}
+
+/* ==========================================================================
+   Formulaires Admin (ex: fiche article menu, staff, table...)
+   Les champs Django ({{ form.champ }}) n'ont pas de classe CSS par défaut :
+   on les cible donc via les balises brutes à l'intérieur de .form-card-admin
+   ========================================================================== */
+
+.form-card-admin {
+    max-width: 650px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 2.2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.form-card-admin h2 {
+    margin-top: 0;
+    margin-bottom: 1.8rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--admin-text-dark);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.form-group-admin {
+    margin-bottom: 1.4rem;
+}
+
+.form-row-admin {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-bottom: 1.4rem;
+}
+
+.form-label-admin {
+    display: block;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--admin-text-dark);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.2px;
+}
+
+/* Champs texte, nombre, url, textarea, select */
+.form-card-admin input[type="text"],
+.form-card-admin input[type="number"],
+.form-card-admin input[type="url"],
+.form-card-admin input[type="email"],
+.form-card-admin input[type="tel"],
+.form-card-admin textarea,
+.form-card-admin select {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--admin-bg);
+    border: 1.5px solid transparent;
+    border-radius: 14px;
+    padding: 0.8rem 1.1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--admin-text-dark);
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-card-admin textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-card-admin input:focus,
+.form-card-admin textarea:focus,
+.form-card-admin select:focus {
+    background: #FFFFFF;
+    border-color: var(--admin-purple);
+    box-shadow: 0 0 0 4px var(--admin-purple-light);
+}
+
+.form-card-admin input::placeholder,
+.form-card-admin textarea::placeholder {
+    color: var(--admin-text-muted);
+}
+
+.form-card-admin select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A8A9E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px;
+    padding-right: 2.6rem;
+    cursor: pointer;
+}
+
+/* Upload de fichier (photo) */
+.form-card-admin input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--admin-bg);
+    border: 1.5px dashed #D1D5DB;
+    border-radius: 14px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-card-admin input[type="file"]:hover {
+    border-color: var(--admin-purple);
+    background: var(--admin-purple-light);
+}
+
+/* Ligne des cases à cocher (Disponible / Populaire / Promo) */
+.form-checkbox-row-admin {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1.8rem;
+}
+
+.form-checkbox-row-admin label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--admin-bg);
+    border: 1.5px solid transparent;
+    border-radius: 30px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--admin-text-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-checkbox-row-admin label:has(input:checked) {
+    background: var(--admin-purple-light);
+    border-color: var(--admin-purple);
+    color: var(--admin-purple);
+}
+
+.form-checkbox-row-admin input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--admin-purple);
+    cursor: pointer;
+}
+
+/* Bouton de soumission */
+.form-card-admin .btn-checkout-pos {
+    max-width: 260px;
+    box-shadow: 0 8px 20px rgba(108, 60, 233, 0.25);
+}
+
+/* Bouton secondaire (Annuler) + ligne d'actions */
+.form-actions-row-admin {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.8rem;
+}
+
+.form-actions-row-admin .btn-checkout-pos {
+    flex: 1;
+    margin-top: 0;
+}
+
+.btn-cancel-admin {
+    flex: 1;
+    background: var(--admin-bg);
+    color: var(--admin-text-muted);
+    padding: 0.9rem 1.4rem;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel-admin:hover {
+    background: #F3F4F6;
+    color: var(--admin-text-dark);
+    border-color: #E5E7EB;
+}
+
+/* Messages flash (succès / erreur) */
+.messages-wrapper-admin {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.alert-admin {
+    padding: 0.8rem 1.2rem;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.alert-admin.success { background: #E6F9F0; color: var(--admin-green); }
+.alert-admin.error   { background: #FDE8EA; color: var(--admin-red); }
+
+/* Bouton "Site Public" dans le header admin */
+.header-actions-admin {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.btn-site-public-admin {
+    background: #FFFFFF;
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    color: var(--admin-purple);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-site-public-admin:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+/* Lien de déconnexion dans la sidebar */
+.btn-logout-admin {
+    color: #FF6B81;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-logout-admin:hover {
+    text-decoration: underline;
+}
+
+/* Panneau droit — avatar numéroté + alignement prix/statut */
+.order-item-avatar {
+    background: var(--admin-purple-light);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--admin-purple);
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.order-item-right {
+    text-align: right;
+}
+
+/* Grille à 2 colonnes de la Caisse POS (caisse.html) */
+.caisse-layout-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1.8rem;
+}
+
+@media (max-width: 1000px) {
+    .caisse-layout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Responsive : sous 1200px on cache le panneau droit, sous 900px la sidebar passe en top bar */
+/* Bouton burger + overlay — masqués par défaut, activés sous 900px */
+.admin-sidebar-toggle-btn {
+    display: none;
+    background: var(--admin-purple-light);
+    color: var(--admin-purple);
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+}
+
+.admin-sidebar-overlay {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .admin-app-layout {
+        grid-template-columns: 260px 1fr;
+    }
+    .admin-right-panel {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   Responsive — Tablette / mobile (≤ 900px) : sidebar en tiroir (off-canvas)
+   ========================================================================== */
+@media (max-width: 900px) {
+    .admin-app-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar-toggle-btn {
+        display: flex;
+    }
+
+    .admin-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 260px;
+        z-index: 1001;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .admin-sidebar.mobile-open {
+        transform: translateX(0);
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .admin-sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(17, 17, 30, 0.5);
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .admin-sidebar-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .admin-main-content {
+        padding: 1.2rem;
+    }
+
+    .admin-top-header {
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .header-user-welcome h2 {
+        font-size: 1.25rem;
+    }
+
+    .header-search-bar {
+        width: 100%;
+        order: 3;
+    }
+
+    .dashboard-top-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-banner-promo {
+        padding: 1.4rem 1.6rem;
+    }
+
+    .admin-dishes-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ==========================================================================
+   Responsive — Petit mobile (≤ 600px)
+   ========================================================================== */
+@media (max-width: 600px) {
+    .form-row-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dishes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-top-header {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .header-actions-admin {
+        width: 100%;
+        order: 4;
+    }
+
+    .btn-site-public-admin {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-banner-promo {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 1rem;
+    }
+
+    .hero-banner-promo-text {
+        max-width: 100%;
+    }
+
+    .hero-banner-promo > i {
+        display: none;
+    }
+
+    .form-card-admin {
+        padding: 1.4rem;
+    }
+
+    .form-actions-row-admin {
+        flex-direction: column;
+    }
+}
+
+/* ==========================================================================
+   En-tête de page (titre + actions) — ex: "Gestion du Menu"
+   Remplace les styles inline pour hériter du comportement responsive
+   ========================================================================== */
+.menu-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.menu-page-header-title h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.menu-page-header-title p {
+    color: var(--admin-text-muted);
+    margin: 0.3rem 0 0 0;
+}
+
+.menu-page-header-actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.btn-menu-secondary,
+.btn-menu-primary {
+    padding: 0.7rem 1.4rem;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.btn-menu-secondary {
+    background: var(--admin-purple-light);
+    color: var(--admin-purple);
+}
+
+.btn-menu-primary {
+    background: var(--admin-purple);
+    color: white;
+}
+
+/* Variante rouge du bouton principal, pour les actions de suppression */
+.btn-checkout-pos.danger {
+    background: var(--admin-red);
+    box-shadow: 0 8px 20px rgba(232, 68, 92, 0.3);
+}
+
+.btn-checkout-pos.danger:hover {
+    background: #D6334B;
+}
+
+/* Variante plus étroite de la carte formulaire, pour les boîtes de confirmation */
+.form-card-admin--narrow {
+    max-width: 500px;
+}
+
+@media (max-width: 600px) {
+    .menu-page-header-actions {
+        width: 100%;
+    }
+
+    .menu-page-header-actions a {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+/* Tableau de commandes — défilement horizontal sur petits écrans plutôt qu'un débordement cassé */
+.table-responsive-admin {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 700px) {
+    .table-responsive-admin table {
+        min-width: 640px;
+    }
+}
+
+/* ==========================================================================
+   Rapports financiers (rapports.html)
+   ========================================================================== */
+.reports-grid-admin {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.8rem;
+}
+
+.report-card-admin {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 1.8rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.report-card-admin h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+}
+
+.report-date-filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.report-date-filter-form input[type="date"] {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 12px;
+    border: 1px solid #D1D5DB;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.report-date-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1 1 140px;
+    min-width: 140px;
+}
+
+.report-date-field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--admin-text-muted);
+}
+
+.report-date-filter-form button {
+    background: var(--admin-purple);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.report-ca-box {
+    background: var(--admin-purple-light);
+    border-radius: 18px;
+    padding: 1.4rem;
+    margin-bottom: 1.5rem;
+}
+
+.report-ca-label {
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+    font-weight: 600;
+}
+
+.report-ca-amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--admin-purple);
+    margin: 0.4rem 0;
+}
+
+.report-ca-meta {
+    font-size: 0.85rem;
+    color: var(--admin-text-dark);
+}
+
+.report-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.report-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+    border-bottom: 1px solid #F3F4F6;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.report-history-title {
+    font-weight: 800;
+}
+
+.report-history-meta {
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.report-history-right {
+    text-align: right;
+}
+
+.report-history-amount {
+    font-weight: 800;
+    color: var(--admin-purple);
+}
+
+.report-history-link {
+    font-size: 0.75rem;
+    color: #3B82F6;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.report-history-empty {
+    color: var(--admin-text-muted);
+    text-align: center;
+    padding: 2rem;
+}
+
+@media (max-width: 900px) {
+    .reports-grid-admin {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .report-card-admin {
+        padding: 1.3rem;
+    }
+
+    .report-ca-amount {
+        font-size: 1.8rem;
+    }
+
+    .report-history-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .report-history-right {
+        text-align: left;
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   Liste des commandes (commandes.html)
+   ========================================================================== */
+.list-card-admin {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.table-orders-admin {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.table-orders-admin thead tr {
+    border-bottom: 2px solid #F3F4F6;
+    color: var(--admin-text-muted);
+}
+
+.table-orders-admin th {
+    padding: 0.8rem 0;
+    font-weight: 700;
+}
+
+.table-orders-admin td {
+    padding: 1rem 0;
+}
+
+.table-orders-admin tbody tr {
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.table-orders-admin .order-ref-cell {
+    font-weight: 700;
+}
+
+.table-orders-admin .order-client-phone {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+}
+
+.table-orders-admin .order-total-cell {
+    font-weight: 800;
+    color: var(--admin-purple);
+}
+
+.table-orders-admin .order-action-cell {
+    text-align: right;
+}
+
+.btn-order-action {
+    background: var(--admin-purple);
+    color: white;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.table-orders-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--admin-text-muted);
+}
+
+@media (max-width: 600px) {
+    .list-card-admin {
+        padding: 1.1rem;
+    }
+}
+
+/* ==========================================================================
+   Grille des Tables du restaurant (tables_liste.html)
+   ========================================================================== */
+.tables-grid-admin {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.table-card-admin {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 1.4rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    position: relative;
+    border-top: 5px solid var(--admin-green);
+}
+
+.table-card-admin.occupee {
+    border-top-color: var(--admin-red);
+}
+
+.table-card-admin.reservee {
+    border-top-color: var(--admin-orange);
+}
+
+.table-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.table-card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.table-card-meta {
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+    margin-bottom: 1.2rem;
+}
+
+.table-status-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-table-status {
+    flex: 1;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.btn-table-status.free {
+    background: #E6F9F0;
+    color: var(--admin-green);
+}
+
+.btn-table-status.occupy {
+    background: #FFF4E5;
+    color: var(--admin-orange);
+}
+
+.tables-grid-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--admin-text-muted);
+    padding: 2rem;
+}
+
+@media (max-width: 1100px) {
+    .tables-grid-admin {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .tables-grid-admin {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .tables-grid-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .table-status-actions {
+        flex-direction: column;
+    }
+}
