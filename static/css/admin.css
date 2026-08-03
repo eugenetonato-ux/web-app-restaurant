@@ -31,7 +31,8 @@ body {
 .admin-app-layout {
     display: grid;
     grid-template-columns: 260px 1fr 340px;
-    height: 100vh;      /* hauteur FIXE (et non min-height) : le conteneur ne grandit plus avec le contenu */
+    height: 100vh;      /* fallback pour anciens navigateurs */
+    height: 100dvh;     /* hauteur FIXE (et non min-height) : le conteneur ne grandit plus avec le contenu — dvh s'adapte à la barre d'adresse mobile */
     overflow: hidden;
 }
 
@@ -44,6 +45,7 @@ body {
     flex-direction: column;
     box-shadow: 4px 0 25px rgba(108, 60, 233, 0.15);
     height: 100vh;
+    height: 100dvh;
     overflow: hidden; /* le scroll se fait dans .sidebar-nav-scroll, pas ici */
 }
 
@@ -118,7 +120,9 @@ body {
 /* Central Main Content Area */
 .admin-main-content {
     padding: 2rem;
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
     height: 100vh;
+    height: 100dvh;
     overflow-y: auto; /* seule cette colonne défile lors de la navigation dans le contenu */
 }
 
@@ -152,6 +156,7 @@ body {
 
 .header-search-bar input {
     width: 100%;
+    box-sizing: border-box;
     background: #FFFFFF;
     border: none;
     padding: 0.75rem 1.2rem 0.75rem 2.8rem;
@@ -410,6 +415,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     height: 100vh;
+    height: 100dvh;
     overflow-y: auto; /* la liste "Order Menu" défile indépendamment du centre */
 }
 
