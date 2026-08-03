@@ -74,6 +74,28 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key === 'Escape') closeAllNavDropdowns();
     });
 
+    /* ----- Caisse POS : verrouille "Montant reçu" pour les paiements électroniques ----- */
+    const modePaiementSelect = document.getElementById('modePaiementSelect');
+    const montantRecuInput = document.getElementById('montantRecuInput');
+    const montantRecuHint = document.getElementById('montantRecuHint');
+
+    function toggleMontantRecu() {
+        if (!modePaiementSelect || !montantRecuInput) return;
+        const isCash = modePaiementSelect.value === 'especes';
+        montantRecuInput.readOnly = !isCash;
+        montantRecuInput.style.background = isCash ? '' : '#F3F4F6';
+        montantRecuInput.style.cursor = isCash ? '' : 'not-allowed';
+        if (!isCash) {
+            montantRecuInput.value = montantRecuInput.dataset.total || montantRecuInput.value;
+        }
+        if (montantRecuHint) montantRecuHint.style.display = isCash ? 'none' : 'block';
+    }
+
+    if (modePaiementSelect) {
+        modePaiementSelect.addEventListener('change', toggleMontantRecu);
+        toggleMontantRecu();
+    }
+
     /* ----- Recherche admin en direct (header partagé de toutes les pages back-office) ----- */
     const adminSearchBar = document.getElementById('adminSearchBar');
     const adminSearchInput = document.getElementById('adminSearchInput');

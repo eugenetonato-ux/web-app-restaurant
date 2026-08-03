@@ -80,10 +80,6 @@
                 <p><a href="{% url 'website_menu' %}" class="footer-link">Notre Menu</a></p>
                 <p><a href="{% url 'website_panier' %}" class="footer-link">Mon Panier</a></p>
             </div>
-            <div class="footer-col">
-                <h4>Back-Office Staff</h4>
-                <p><a href="{% url 'connexion' %}" class="footer-link-staff"><i class="fa-solid fa-lock"></i> Connexion Personnel</a></p>
-            </div>
         </div>
         <div class="footer-bottom-row">
             &copy; 2026 Délice Express. Tous droits réservés.
@@ -93,5 +89,31 @@
     <script src="{% static 'js/panier.js' %}?v=2"></script>
     <script src="{% static 'js/script.js' %}?v=2"></script>
     {% block extra_js %}{% endblock %}
+
+    <!-- Modal de confirmation d'ajout au panier -->
+    <div class="modal-overlay" id="addToCartModalOverlay">
+        <div class="modal-box">
+            <i class="fa-solid fa-cart-plus modal-icon"></i>
+            <h3>Ajouter au panier ?</h3>
+            <p id="addToCartModalText">Souhaitez-vous ajouter cet article à votre panier ?</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" id="addToCartCancelBtn">Annuler</button>
+                <button type="button" class="btn-modal-confirm" id="addToCartConfirmBtn">Oui, ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation pour vider le panier -->
+    <div class="modal-overlay" id="clearCartModalOverlay">
+        <div class="modal-box">
+            <i class="fa-solid fa-trash modal-icon"></i>
+            <h3>Vider le panier ?</h3>
+            <p>Tous les articles seront retirés de votre panier. Cette action est irréversible.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-modal-cancel" id="clearCartCancelBtn">Annuler</button>
+                <button type="button" class="btn-modal-confirm" id="clearCartConfirmBtn">Oui, vider</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

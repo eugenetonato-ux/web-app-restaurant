@@ -26,11 +26,13 @@
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                 <span style="font-size: 0.8rem; font-weight: 700; color: #8A8A9E;">{{ article.categorie.nom }}</span>
-                {% if article.disponible %}
-                    <span style="background: #E6F9F0; color: #3CC98C; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 8px;">Disponible</span>
-                {% else %}
-                    <span style="background: #FDE8EA; color: #E8445C; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 8px;">Masqué</span>
-                {% endif %}
+                <form method="POST" action="{% url 'menu_article_toggle' article.pk %}" class="toggle-dispo-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-toggle-dispo {% if article.disponible %}dispo{% else %}rupture{% endif %}" title="{% if article.disponible %}Marquer en rupture{% else %}Remettre en stock{% endif %}">
+                        <i class="fa-solid {% if article.disponible %}fa-toggle-on{% else %}fa-toggle-off{% endif %}"></i>
+                        {% if article.disponible %}Disponible{% else %}Rupture{% endif %}
+                    </button>
+                </form>
             </div>
 
             <div class="dish-title-admin">{{ article.nom }}</div>

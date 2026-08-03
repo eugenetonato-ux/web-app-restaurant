@@ -82,6 +82,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.website.context_processors.nav_categories",
+                 "apps.dashboard.context_processors.admin_right_panel",
             ],
         },
     },

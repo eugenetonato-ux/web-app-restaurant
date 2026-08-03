@@ -42,7 +42,7 @@
 
                 <div class="product-card-bottom">
                     <div class="product-price">{{ article.get_prix_effectif }} FCFA</div>
-                    <button type="button" class="btn-add-cart" onclick="addToCart({{ article.id }})">
+                    <button type="button" class="btn-add-cart" onclick="confirmAddToCart({{ article.id }}, '{{ article.nom|escapejs }}')">
                         Ajouter +
                     </button>
                 </div>

@@ -20,4 +20,5 @@ urlpatterns = [
     path("articles/<int:pk>/modifier-alt/", views.MenuItemUpdateView.as_view(), name="menu_article_modifier"),
     path("articles/<int:pk>/supprimer/", views.MenuItemDeleteView.as_view(), name="menu_article_delete"),
     path("articles/<int:pk>/supprimer-alt/", views.MenuItemDeleteView.as_view(), name="menu_article_supprimer"),
+    path("articles/<int:pk>/toggle/", views.MenuItemToggleDisponibiliteView.as_view(), name="menu_article_toggle"),
 ]

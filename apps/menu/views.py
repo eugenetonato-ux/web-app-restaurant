@@ -1,6 +1,8 @@
 # apps/menu/views.py
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Category, MenuItem
 from .forms import CategoryForm, MenuItemForm
@@ -58,3 +60,12 @@ class MenuItemDeleteView(LoginRequiredMixin, DeleteView):
     model = MenuItem
     template_name = "Admin/menu_article_confirm_delete.html"
     success_url = reverse_lazy("menu_articles")
+
+
+class MenuItemToggleDisponibiliteView(LoginRequiredMixin, View):
+    """Active/désactive un article (mise en rupture) sans passer par le formulaire complet."""
+    def post(self, request, pk):
+        article = get_object_or_404(MenuItem, pk=pk)
+        article.disponible = not article.disponible
+        article.save(update_fields=["disponible"])
+        return redirect(request.META.get("HTTP_REFERER") or reverse_lazy("menu_articles"))

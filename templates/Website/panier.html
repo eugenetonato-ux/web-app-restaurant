@@ -12,7 +12,12 @@
         <div class="panier-layout-grid">
             <!-- Récapitulatif des articles -->
             <div class="public-card">
-                <h3 style="margin-top: 0; font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem;">Articles sélectionnés</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.6rem;">
+                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700;">Articles sélectionnés</h3>
+                    <button type="button" class="btn-clear-cart" onclick="clearCart()">
+                        <i class="fa-solid fa-trash"></i> Vider le panier
+                    </button>
+                </div>
 
                 <div class="cart-items-list">
                     {% for row in cart_items %}
@@ -28,6 +33,9 @@
                                 <span class="cart-item-qty">x {{ row.quantite }}</span>
                                 <div class="cart-item-subtotal">{{ row.sous_total }} FCFA</div>
                             </div>
+                            <button type="button" class="btn-remove-cart-item" onclick="removeFromCart({{ row.item.id }})" title="Retirer cet article du panier">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
                         </div>
                     {% endfor %}
                 </div>
@@ -66,6 +74,18 @@
                         </select>
                     </div>
 
+                    <div class="order-form-group" id="adresse_livraison_group" style="display: none;">
+                        <label>Adresse de livraison :</label>
+                        <textarea name="adresse_livraison" id="adresse_livraison_input" rows="2" placeholder="ex: Cocody Angré, Rue des Jardins, Villa 12..."></textarea>
+                    </div>
+
+                    <div class="order-form-group" id="livraison_notice_group" style="display: none;">
+                        <div class="delivery-fee-notice">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Les frais de livraison ne sont pas inclus dans le total ci-dessus. Ils sont à votre charge et seront réglés séparément auprès du livreur, selon la distance de votre adresse.</span>
+                        </div>
+                    </div>
+
                     <div class="order-form-group">
                         <label>Votre Nom :</label>
                         <input type="text" name="client_nom" placeholder="ex: Jean Dupont" required>
@@ -98,14 +118,26 @@
 </div>
 
 <script>
-function toggleTableSelect() {
+function toggleOrderTypeFields() {
     const val = document.getElementById('type_commande_select').value;
-    const grp = document.getElementById('table_select_group');
-    if (val === 'sur_place') {
-        grp.style.display = 'block';
-    } else {
-        grp.style.display = 'none';
-    }
+    const tableGrp = document.getElementById('table_select_group');
+    const addressGrp = document.getElementById('adresse_livraison_group');
+    const noticeGrp = document.getElementById('livraison_notice_group');
+    const addressInput = document.getElementById('adresse_livraison_input');
+
+    if (tableGrp) tableGrp.style.display = (val === 'sur_place') ? 'block' : 'none';
+    if (addressGrp) addressGrp.style.display = (val === 'livraison') ? 'block' : 'none';
+    if (noticeGrp) noticeGrp.style.display = (val === 'livraison') ? 'block' : 'none';
+
+    // L'adresse n'est obligatoire qu'en cas de livraison
+    if (addressInput) addressInput.required = (val === 'livraison');
+}
+
+document.addEventListener('DOMContentLoaded', toggleOrderTypeFields);
+
+// Conservé pour compatibilité avec l'attribut onchange existant
+function toggleTableSelect() {
+    toggleOrderTypeFields();
 }
 </script>
 {% endblock %}

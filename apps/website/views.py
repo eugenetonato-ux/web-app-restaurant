@@ -171,6 +171,8 @@ def api_add_to_cart(request):
                     cart.pop(item_id, None)
             elif action == "remove":
                 cart.pop(item_id, None)
+            elif action == "clear":
+                cart = {}
 
             request.session["cart"] = cart
             cart_count = sum(cart.values())

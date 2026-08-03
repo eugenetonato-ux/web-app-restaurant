@@ -526,6 +526,38 @@ body {
 .badge-status.reservee, .badge-status.en_attente { background: #EBF3FE; color: #3B82F6; }
 .badge-status.annulee { background: #FDE8EA; color: #E8445C; }
 
+/* Bouton de bascule Disponible / Rupture (fiches plats) */
+.toggle-dispo-form {
+    display: inline-block;
+}
+
+.btn-toggle-dispo {
+    border: none;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-toggle-dispo:hover {
+    transform: translateY(-1px);
+}
+
+.btn-toggle-dispo.dispo {
+    background: #E6F9F0;
+    color: var(--admin-green);
+}
+
+.btn-toggle-dispo.rupture {
+    background: #FDE8EA;
+    color: var(--admin-red);
+}
+
 /* ==========================================================================
    Formulaires Admin (ex: fiche article menu, staff, table...)
    Les champs Django ({{ form.champ }}) n'ont pas de classe CSS par défaut :
